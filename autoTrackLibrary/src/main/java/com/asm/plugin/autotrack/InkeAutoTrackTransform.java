@@ -15,18 +15,24 @@ import com.android.tools.r8.org.objectweb.asm.ClassVisitor;
 import com.android.tools.r8.org.objectweb.asm.ClassWriter;
 import com.android.utils.FileUtils;
 import com.asm.plugin.autotrack.click.ASMClassVisitor;
+import com.asm.plugin.autotrack.lifecycle.LifecycleClassVisitor;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.compress.utils.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
+import java.util.zip.ZipEntry;
 
 public class InkeAutoTrackTransform extends Transform {
     @Override
@@ -89,7 +95,6 @@ public class InkeAutoTrackTransform extends Transform {
             public void accept(File file) {
                 String name = file.getName();
                 if (name.endsWith(".class") && !name.startsWith("R$") && !"R.class".equals(name) && !"BuildConfig.class".equals(name)) {
-//                    System.out.println("handleDirectoryInput classfile:" + name);
                     FileOutputStream fileOutputStream = null;
                     try {
                         ClassReader classReader = new ClassReader(org.apache.commons.io.FileUtils.readFileToByteArray(file));
@@ -144,50 +149,47 @@ public class InkeAutoTrackTransform extends Transform {
 
             JarFile jarFile = null;
             try {
-//                jarFile = new JarFile(jarInput.getFile());
-//                Enumeration enumeration = jarFile.entries();
-//                File tmpFile = new File(jarInput.getFile().getParent() + File.separator +
-//                        "classes_temp.jar");
-//                //避免上次的缓存被重复插入
-//                if (tmpFile.exists()) {
-//                    tmpFile.delete();
-//                }
-////                JarOutputStream jarOutputStream = new JarOutputStream(new FileOutputStream(tmpFile));
-//                //用于保存
-//                while (enumeration.hasMoreElements()) {
-//                    JarEntry jarEntry = (JarEntry) enumeration.nextElement();
-//                    String entryName = jarEntry.getName();
-//                    ZipEntry zipEntry = new ZipEntry(entryName);
-//                    InputStream inputStream = jarFile.getInputStream(jarEntry);
-//                    //插桩class
-//                    if (entryName.endsWith(".class") && !entryName.startsWith("R$")
-//                            && !"R.class".equals(entryName) && !"BuildConfig.class".equals(entryName)) {
-//                        //class文件处理
-//                        System.out.println("'----------- deal with jar class file <' + "+ entryName + " + '> " + "-----------'");
-//                        System.out.println("handleJarInput classfile:" + entryName);
-//                        jarOutputStream.putNextEntry(zipEntry);
-//                        ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream));
-//                        ClassWriter classWriter = new ClassWriter(classReader,
-//                                ClassWriter.COMPUTE_MAXS);
-//                        ClassVisitor cv = new LifecycleClassVisitor(classWriter);
-//                        classReader.accept(cv, ClassReader.EXPAND_FRAMES);
-//                        byte[] code = classWriter.toByteArray();
-//                        jarOutputStream.write(code);
-//                    } else {
-//                        jarOutputStream.putNextEntry(zipEntry);
-//                        jarOutputStream.write(IOUtils.toByteArray(inputStream));
-//                    }
-//                    jarOutputStream.closeEntry();
-//                }
-//                //结束
-//                jarOutputStream.close();
-//                jarFile.close();
+                jarFile = new JarFile(jarInput.getFile());
+                Enumeration enumeration = jarFile.entries();
+                File tmpFile = new File(jarInput.getFile().getParent() + File.separator +
+                        "classes_temp.jar");
+                //避免上次的缓存被重复插入
+                if (tmpFile.exists()) {
+                    tmpFile.delete();
+                }
+                JarOutputStream jarOutputStream = new JarOutputStream(new FileOutputStream(tmpFile));
+                //用于保存
+                while (enumeration.hasMoreElements()) {
+                    JarEntry jarEntry = (JarEntry) enumeration.nextElement();
+                    String entryName = jarEntry.getName();
+                    ZipEntry zipEntry = new ZipEntry(entryName);
+                    InputStream inputStream = jarFile.getInputStream(jarEntry);
+                    //插桩class
+                    if (entryName.endsWith(".class") && !entryName.startsWith("R$")
+                            && !"R.class".equals(entryName) && !"BuildConfig.class".equals(entryName)) {
+                        jarOutputStream.putNextEntry(zipEntry);
+                        ClassReader classReader = new ClassReader(IOUtils.toByteArray(inputStream));
+                        ClassWriter classWriter = new ClassWriter(classReader,
+                                ClassWriter.COMPUTE_MAXS);
+                        ClassVisitor cv = new ASMClassVisitor(classWriter);
+                        classReader.accept(cv, ClassReader.EXPAND_FRAMES);
+                        byte[] code = classWriter.toByteArray();
+                        jarOutputStream.write(code);
+                    } else {
+                        jarOutputStream.putNextEntry(zipEntry);
+                        jarOutputStream.write(IOUtils.toByteArray(inputStream));
+                    }
+                    jarOutputStream.closeEntry();
+                }
+                //结束
+                jarOutputStream.close();
+                jarFile.close();
 
                 File dest = outputProvider.getContentLocation(jarName+md5Name,
                         jarInput.getContentTypes(), jarInput.getScopes(), Format.JAR);
-//
+
                 FileUtils.copyFile(jarInput.getFile(), dest);
-//                tmpFile.delete();
+                tmpFile.delete();
             } catch (Exception e) {
                 e.printStackTrace();
             }
