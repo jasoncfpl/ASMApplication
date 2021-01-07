@@ -2,8 +2,10 @@ package com.rxandroid.test.asmapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -31,5 +33,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        if (v.getId() == R.id.tv1) {
+            Log.i("tag","弹窗");
+            MyDialog dialog = new MyDialog(this);
+            dialog.show();
+        }
     }
 }
