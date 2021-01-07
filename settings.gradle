@@ -1,0 +1,3 @@
+include ':autoTrackLibrary'
+include ':app'
+rootProject.name = "ASMApplication"

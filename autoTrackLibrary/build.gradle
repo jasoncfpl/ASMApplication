@@ -1,0 +1,30 @@
+apply plugin: 'groovy'
+apply plugin: 'java'
+//发布到本地maven
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+
+    implementation "com.android.tools.build:gradle:3.1.4"
+    implementation "com.android.tools.build:transform-api:1.5.0"
+}
+
+//设置maven deployer
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //设置插件的GAV参数
+            pom.groupId = 'com.asm.plugin'
+            pom.artifactId = 'autotrack'
+            pom.version = '0.0.8'
+            //文件发布到下面目录
+            repository(url: uri('../repo'))
+        }
+    }
+}
