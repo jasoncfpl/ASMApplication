@@ -11,7 +11,7 @@ public class AutoTrackPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         System.out.println("========================");
-        System.out.println("hello com.asm.plugin.autotrack.AutoTrackPlugin gradle plugin!");
+        System.out.println("hello AutoTrackPlugin gradle plugin!");
         System.out.println("========================");
         AppExtension appExtension = project.getExtensions().getByType(AppExtension.class);
         appExtension.registerTransform(new InkeAutoTrackTransform());

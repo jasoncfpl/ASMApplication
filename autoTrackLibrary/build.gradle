@@ -22,7 +22,7 @@ uploadArchives {
             //设置插件的GAV参数
             pom.groupId = 'com.asm.plugin'
             pom.artifactId = 'autotrack'
-            pom.version = '0.0.8'
+            pom.version = '0.0.1'
             //文件发布到下面目录
             repository(url: uri('../repo'))
         }
