@@ -37,7 +37,7 @@ public class OnClickMethodVisitorBack extends AdviceAdapter {
         if ("onClick".equals(mMethodName)) {
             System.out.println("onMethodEnter:" + mMethodName);
             mv.visitVarInsn(ALOAD,1);
-            mv.visitMethodInsn(Opcodes.INVOKESTATIC,"com/meelive/ingkee/autotrack/ASMTracker",
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC,"com/asm/plugin/autotrack/track/ASMTracker",
                     "track","(Landroid/view/View;)V",false);
         }
     }

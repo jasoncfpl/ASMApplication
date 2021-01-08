@@ -18,7 +18,7 @@ public class OnItemClickMethodVisitor extends MethodVisitor {
         System.out.println("OnItemClickMethodVisitor ---:" + mMethodDesc);
         if ("(Landroid/widget/AdapterView;Landroid/view/View;IJ)V".equals(mMethodDesc)) {
             mv.visitVarInsn(Opcodes.ALOAD,1);
-            mv.visitMethodInsn(Opcodes.INVOKESTATIC,"com/meelive/ingkee/autotrack/ASMTracker",
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC,"com/asm/plugin/autotrack/track/ASMTracker",
                     "itemClickTrack","(Landroid/view/View;)V",false);
         }
         super.visitCode();

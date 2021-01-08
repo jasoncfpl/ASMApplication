@@ -17,7 +17,7 @@ public class OnClickMethodVisitor extends MethodVisitor {
     public void visitCode() {
         if ("(Landroid/view/View;)V".equals(mMethodDesc)) {
             mv.visitVarInsn(Opcodes.ALOAD,1);
-            mv.visitMethodInsn(Opcodes.INVOKESTATIC,"com/meelive/ingkee/autotrack/ASMTracker",
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC,"com/asm/plugin/autotrack/track/ASMTracker",
                     "track","(Landroid/view/View;)V",false);
         }
         super.visitCode();
