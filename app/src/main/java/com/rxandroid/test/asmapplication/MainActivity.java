@@ -7,23 +7,59 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import java.util.ArrayList;
+import java.util.List;
 
+public class MainActivity extends AppCompatActivity {
+
+
+    private ListView mListView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mListView = findViewById(R.id.list_view);
         findViewById(R.id.tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,SecondActivity.class);
-                startActivity(intent);
+                Log.i("TAG","on Click!!!!!");
+//                Intent intent = new Intent(MainActivity.this,SecondActivity.class);
+//                startActivity(intent);
             }
         });
 
-        findViewById(R.id.tv1).setOnClickListener(this);
+        findViewById(R.id.show_dialog).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("TAG","show_dialog Click!!!!!");
+                MyDialog dialog = new MyDialog(MainActivity.this);
+                dialog.show();
+            }
+        });
+
+        findViewById(R.id.long_click_btn).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Log.i("TAG","onLongClick!!!!!");
+                return false;
+            }
+        });
+        List listViewList = new ArrayList();
+        for (int i = 0; i < 10; i++) {
+            listViewList.add("ListViewItem==" + i);
+        }
+        mListView.setAdapter(new ArrayAdapter<String>(MainActivity.this,
+                android.R.layout.simple_list_item_1,listViewList));
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("TAG","ListView onItemClick:" + position);
+            }
+        });
     }
 
     @Override
@@ -31,12 +67,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.tv1) {
-            Log.i("tag","弹窗");
-            MyDialog dialog = new MyDialog(this);
-            dialog.show();
-        }
-    }
 }

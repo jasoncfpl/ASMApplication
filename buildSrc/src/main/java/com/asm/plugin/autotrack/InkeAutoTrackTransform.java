@@ -103,7 +103,6 @@ public class InkeAutoTrackTransform extends Transform {
                         classReader.accept(classVisitor,ClassReader.EXPAND_FRAMES);
                         byte[] bytes = classWriter.toByteArray();
                         File destFile = new File(Objects.requireNonNull(file.getParentFile()).getAbsoluteFile(),name);
-                        System.out.println("directoryInput =====重新写入位置 --> " + destFile.getAbsolutePath());
                         fileOutputStream = new FileOutputStream(destFile);
                         fileOutputStream.write(bytes);
 
