@@ -7,6 +7,7 @@ repositories {
     mavenCentral()
     google()
     jcenter()
+    maven { url "https://repository.inkept.cn/repository/maven-releases" }
 }
 
 dependencies {
@@ -53,8 +54,12 @@ publishing {
 
     repositories {
         maven {
-            url 'http://127.0.0.1:8081/artifactory/meelive-plugins'
+            url "https://repository.inkept.cn/repository/maven-releases"
+//            url 'http://127.0.0.1:8081/artifactory/meelive-plugins'
             credentials {
+                username "deploy"
+                password 'Inke!@#'
+//                password "yy2013551627"
             }
         }
     }
